@@ -1,9 +1,13 @@
 ## Setup:
 
 connect the components as specified by the constants of the main.py file:
+
 WORKER_LEDS -> GP17
+
 PLANT_LEDS -> GP16
+
 WORKER_BUTTON -> GP15
+
 PLANT_BUTTON -> GP14
 
 ## Todo:
