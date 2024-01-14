@@ -1,11 +1,13 @@
 import board
 import digitalio
 
-WORKER_LEDS = board.GP17
+WORKER_LED_RED = board.GP17
+WORKER_LED_BLUE = board.GP18 #PIN TBD
+WORKER_LED_GREEN = board.GP19 #PIN TBD
 PLANT_LEDS = board.GP16
 
-WORKER_BUTTON = board.GP18
-SYSTEM_BUTTON = board.GP19
+WORKER_BUTTON = board.GP20
+SYSTEM_BUTTON = board.GP21
 
 
 class Controller:
@@ -14,8 +16,12 @@ class Controller:
         self.PlantLeds = digitalio.DigitalInOut(PLANT_LEDS)
         self.PlantLeds.direction = digitalio.Direction.OUTPUT
 
-        self.WorkerLeds = digitalio.DigitalInOut(WORKER_LEDS)
-        self.WorkerLeds.direction = digitalio.Direction.OUTPUT
+        self.WorkerLedRED = digitalio.DigitalInOut(WORKER_LED_RED)
+        self.WorkerLedRED.direction = digitalio.Direction.OUTPUT
+        self.WorkerLedGREEN = digitalio.DigitalInOut(WORKER_LED_GREEN)
+        self.WorkerLedGREEN.direction = digitalio.Direction.OUTPUT
+        self.WorkerLedBLUE = digitalio.DigitalInOut(WORKER_LED_BLUE)
+        self.WorkerLedBLUE.direction = digitalio.Direction.OUTPUT
 
         self.board_led = digitalio.DigitalInOut(board.LED)
         self.board_led.direction = digitalio.Direction.OUTPUT
@@ -58,17 +64,23 @@ class Controller:
         if self.state['System'] == 0:
             # If the system is off, turn off all of the LEDs
             self.PlantLeds.value = False
-            self.WorkerLeds.value = False
+            self.WorkerLedRED.value = False
+            self.WorkerLedBLUE.value = False
+            self.WorkerLedGREEN.value = False
 
         # The following cases will only be applied if the system is on
         elif (self.state['Worker'] == 0):
-            # If the worker mode is disabled, turn on the plant LEDs, and turn off the worker LEDs
-            self.WorkerLeds.value = False
+            # If the worker mode is disabled, turn on the plant LEDs, and turn the worker LEDs to a specific colour (e.g red)
+            self.WorkerLedRED.value = True
+            self.WorkerLedGREEN.value = False
+            self.WorkerLedBLUE.value = False
             self.PlantLeds.value = True
 
         else:
             # If the worker mode is enabled, turn on the worker LEDs, and turn on the plant LEDs
-            self.WorkerLeds.value = True
+            self.WorkerLedRED.value = True
+            self.WorkerLedGREEN.value = True
+            self.WorkerLedBLUE.value = True
             self.PlantLeds.value = True
 
     def loop(self):
