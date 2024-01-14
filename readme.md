@@ -22,7 +22,7 @@ Go to [draw.io](https://app.diagrams.net/) and open the file. You can edit it on
 
 ## Todo:
 
-- [ ] Change the code to support a RGB LED for the worker lights instead of a standard LED
+- [x] Change the code to support a RGB LED for the worker lights instead of a standard LED (Harry and Mateusz)
 - [ ] Develop procedure to measure the light intensity as for the handout
 - [ ] Develop procedure to measure the soil moisture as for the handout
 - [ ] calculate resistor values
