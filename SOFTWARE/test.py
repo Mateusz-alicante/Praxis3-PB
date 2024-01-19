@@ -57,10 +57,10 @@ class BOARD_CONTROLLER:
             # This will check for negative edges of the plant button (when the button is pressed)
             self.state['System'] = not self.state['System']
 
-            # When the system is turned on, for the convenience of the user, the worker mode is also turned on
+            # When the system is turned on, for the convenience of the user, the worker mode is also turned on.
+            # When the system is turned off, the worker mode is also turned off.
             # (if someone is there to turn the system on, he will appreciate the worker mode being on)
-            if self.state['System'] == 1:
-                self.state['Worker'] = 1
+            self.state['Worker'] = self.state['System']
 
     def updateLEDs(self):
         # Update the LED based on the state
@@ -95,6 +95,7 @@ assert controller.state['System'] == 1
 assert controller.Leds.redPin['value'] == True
 assert controller.Leds.greenPin['value'] == True
 assert controller.Leds.bluePin['value'] == True
+print("Test 1 passed")
 
 # Test 2: After one loop, check that the worker mode is still on
 controller.__init__()
@@ -104,6 +105,7 @@ assert controller.state['System'] == 1
 assert controller.Leds.redPin['value'] == True
 assert controller.Leds.greenPin['value'] == True
 assert controller.Leds.bluePin['value'] == True
+print("Test 2 passed")
 
 # Test 3: After pressing the worker button, check that the worker mode is off
 controller.__init__()
@@ -116,6 +118,7 @@ assert controller.state['System'] == 1
 assert controller.Leds.redPin['value'] == True
 assert controller.Leds.greenPin['value'] == False
 assert controller.Leds.bluePin['value'] == True
+print("Test 3 passed")
 
 # Test 4: After pressing the worker button, check that the worker mode is off, check after several cycles
 controller.__init__()
@@ -130,6 +133,7 @@ assert controller.state['System'] == 1
 assert controller.Leds.redPin['value'] == True
 assert controller.Leds.greenPin['value'] == False
 assert controller.Leds.bluePin['value'] == True
+print("Test 4 passed")
 
 # Test 5: After pressing the system button, check that the worker mode is on
 controller.__init__()
@@ -146,8 +150,9 @@ assert controller.state['System'] == 1
 assert controller.Leds.redPin['value'] == True
 assert controller.Leds.greenPin['value'] == False
 assert controller.Leds.bluePin['value'] == True
+print("Test 5 passed")
 
-# Test 6: When the system button is pressed twice, check that the system turns off
+# Test 6: When the system off button is pressed, check that the system turns off
 controller.__init__()
 controller.SystemButton['value'] = True
 controller.singleLoop()
@@ -155,18 +160,15 @@ controller.SystemButton['value'] = False
 controller.singleLoop()
 controller.SystemButton['value'] = True
 controller.singleLoop()
-controller.SystemButton['value'] = False
-controller.singleLoop()
-controller.SystemButton['value'] = True
-controller.singleLoop()
+print(controller.state)
 assert controller.state['Worker'] == 0
 assert controller.state['System'] == 0
 assert controller.Leds.redPin['value'] == False
 assert controller.Leds.greenPin['value'] == False
 assert controller.Leds.bluePin['value'] == False
+print("Test 6 passed")
 
-
-# Test 7: When the system button is pressed twice to turn it off, and then disable it again, the worker mode should be on
+# Test 7: When the system button is pressed twice, turn off and then turn on, check that the worker mode still enables.
 controller.__init__()
 controller.SystemButton['value'] = True
 controller.singleLoop()
@@ -177,8 +179,6 @@ controller.singleLoop()
 controller.SystemButton['value'] = False
 controller.singleLoop()
 controller.SystemButton['value'] = True
-controller.singleLoop()
-controller.WorkerButton['value'] = False
 controller.singleLoop()
 controller.singleLoop()
 assert controller.state['Worker'] == 1
@@ -186,3 +186,4 @@ assert controller.state['System'] == 1
 assert controller.Leds.redPin['value'] == True
 assert controller.Leds.greenPin['value'] == True
 assert controller.Leds.bluePin['value'] == True
+print("Test 7 passed")

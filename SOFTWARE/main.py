@@ -85,10 +85,10 @@ class BOARD_CONTROLLER:
             # This will check for negative edges of the plant button (when the button is pressed)
             self.state['System'] = not self.state['System']
 
-            # When the system is turned on, for the convenience of the user, the worker mode is also turned on
+            # When the system is turned on, for the convenience of the user, the worker mode is also turned on.
+            # When the system is turned off, the worker mode is also turned off.
             # (if someone is there to turn the system on, he will appreciate the worker mode being on)
-            if self.state['System'] == 1:
-                self.state['Worker'] = 1
+            self.state['Worker'] = self.state['System']
 
     def updateLEDs(self):
         # Update the LED based on the state
