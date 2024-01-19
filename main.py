@@ -48,7 +48,7 @@ class Controller:
             self.state['Worker'] = not self.state['Worker']
 
         if self.state['Previous_SYSTEM_BUTTON'] != self.SystemButton.value and self.SystemButton.value == 0:
-            # This will check for negative edges of the plant button (when the button is pressed)
+            # This will check for negative edges of the system button (when the button is pressed)
             self.state['System'] = not self.state['System']
 
             # When the system is turned on, for the convenience of the user, the worker mode is also turned on
