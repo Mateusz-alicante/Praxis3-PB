@@ -1,18 +1,24 @@
+'''
+Course: ESC 204
+Team: 0105-08
+Project: Plant Monitoring System
+Description: This file contains the main program that will run on the Raspberry Pi Pico.
+'''
+
 import board
 import digitalio
 
-WORDER_LEDS = {
+LED_PINS = {
     'RED': board.GP17,
     'BLUE': board.GP18,
     'GREEN': board.GP19
 }
-PLANT_LEDS = board.GP16
 
 WORKER_BUTTON = board.GP20
 SYSTEM_BUTTON = board.GP21
 
 
-class RGB_LED:
+class LED_CONTROLLER:
     def __init__(self, redPin, greenPin, bluePin):
         self.redPin = digitalio.DigitalInOut(redPin)
         self.greenPin = digitalio.DigitalInOut(greenPin)
@@ -22,30 +28,30 @@ class RGB_LED:
         self.greenPin.direction = digitalio.Direction.OUTPUT
         self.bluePin.direction = digitalio.Direction.OUTPUT
 
-    def RGB_off(self):
+        # When the LEDs are initialized (worker mode will be enabled by default), turn all of the LEDs on
+        self.LEDs_white()
+
+    def LEDs_off(self):
         self.redPin.value = False
         self.greenPin.value = False
         self.bluePin.value = False
 
-    def RGB_red(self):
+    def LEDs_pink(self):
         self.redPin.value = True
         self.greenPin.value = False
-        self.bluePin.value = False
+        self.bluePin.value = True
 
-    def RGB_white(self):
+    def LEDs_white(self):
         self.redPin.value = True
         self.greenPin.value = True
         self.bluePin.value = True
 
 
-class Controller:
+class BOARD_CONTROLLER:
     def __init__(self):
         # Initialize the LEDs
-        self.PlantLeds = digitalio.DigitalInOut(PLANT_LEDS)
-        self.PlantLeds.direction = digitalio.Direction.OUTPUT
-
-        self.WorkerLed = RGB_LED(
-            WORDER_LEDS['RED'], WORDER_LEDS['GREEN'], WORDER_LEDS['BLUE'])
+        self.Leds = LED_CONTROLLER(
+            LED_PINS['RED'], LED_PINS['GREEN'], LED_PINS['BLUE'])
 
         self.board_led = digitalio.DigitalInOut(board.LED)
         self.board_led.direction = digitalio.Direction.OUTPUT
@@ -60,8 +66,8 @@ class Controller:
         self.SystemButton.pull = digitalio.Pull.UP
 
         self.state = {
-            'Worker': 1,
-            'System': 1,
+            'Worker': 1,  # Indicates if the worker mode is enabled
+            'System': 1,   # Indicates if the system KEDs are on
             'Previous_WORKER_BUTTON': 0,
             'Previous_SYSTEM_BUTTON': 0,
         }
@@ -80,6 +86,7 @@ class Controller:
             self.state['System'] = not self.state['System']
 
             # When the system is turned on, for the convenience of the user, the worker mode is also turned on
+            # (if someone is there to turn the system on, he will appreciate the worker mode being on)
             if self.state['System'] == 1:
                 self.state['Worker'] = 1
 
@@ -87,19 +94,15 @@ class Controller:
         # Update the LED based on the state
         if self.state['System'] == 0:
             # If the system is off, turn off all of the LEDs
-            self.PlantLeds.value = False
-            self.WorkerLed.RGB_off()
+            self.Leds.LEDs_off()
 
         # The following cases will only be applied if the system is on
         elif (self.state['Worker'] == 0):
             # If the worker mode is disabled, turn on the plant LEDs, and turn the worker LEDs to a specific colour (e.g red)
-            self.WorkerLedRED.value = True
-            self.WorkerLed.RGB_red()
-
+            self.Leds.LEDs_pink()
         else:
             # If the worker mode is enabled, turn on the worker LEDs, and turn on the plant LEDs
-            self.WorkerLed.RGB_white()
-            self.PlantLeds.value = True
+            self.Leds.LEDs_white()
 
     def loop(self):
         while True:
@@ -112,5 +115,5 @@ class Controller:
             self.state['Previous_SYSTEM_BUTTON'] = self.SystemButton.value
 
 
-controller = Controller()
+controller = BOARD_CONTROLLER()
 controller.loop()
