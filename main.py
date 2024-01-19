@@ -1,10 +1,9 @@
 import board
 import digitalio
 
-WORKER_LED_RED = board.GP17
-WORKER_LED_BLUE = board.GP18 #PIN TBD
-WORKER_LED_GREEN = board.GP19 #PIN TBD
-PLANT_LEDS = board.GP16
+LED_RED = board.GP17
+LED_BLUE = board.GP18 #PIN TBD
+LED_GREEN = board.GP19 #PIN TBD
 
 WORKER_BUTTON = board.GP20
 SYSTEM_BUTTON = board.GP21
@@ -13,15 +12,12 @@ SYSTEM_BUTTON = board.GP21
 class Controller:
     def __init__(self):
         # Initialize the LEDs
-        self.PlantLeds = digitalio.DigitalInOut(PLANT_LEDS)
-        self.PlantLeds.direction = digitalio.Direction.OUTPUT
-
-        self.WorkerLedRED = digitalio.DigitalInOut(WORKER_LED_RED)
-        self.WorkerLedRED.direction = digitalio.Direction.OUTPUT
-        self.WorkerLedGREEN = digitalio.DigitalInOut(WORKER_LED_GREEN)
-        self.WorkerLedGREEN.direction = digitalio.Direction.OUTPUT
-        self.WorkerLedBLUE = digitalio.DigitalInOut(WORKER_LED_BLUE)
-        self.WorkerLedBLUE.direction = digitalio.Direction.OUTPUT
+        self.LedRED = digitalio.DigitalInOut(LED_RED)
+        self.LedRED.direction = digitalio.Direction.OUTPUT
+        self.LedGREEN = digitalio.DigitalInOut(LED_GREEN)
+        self.LedGREEN.direction = digitalio.Direction.OUTPUT
+        self.LedBLUE = digitalio.DigitalInOut(LED_BLUE)
+        self.LedBLUE.direction = digitalio.Direction.OUTPUT
 
         self.board_led = digitalio.DigitalInOut(board.LED)
         self.board_led.direction = digitalio.Direction.OUTPUT
@@ -63,25 +59,22 @@ class Controller:
         # Update the LED based on the state
         if self.state['System'] == 0:
             # If the system is off, turn off all of the LEDs
-            self.PlantLeds.value = False
-            self.WorkerLedRED.value = False
-            self.WorkerLedBLUE.value = False
-            self.WorkerLedGREEN.value = False
+            self.LedRED.value = False
+            self.LedBLUE.value = False
+            self.LedGREEN.value = False
 
         # The following cases will only be applied if the system is on
         elif (self.state['Worker'] == 0):
-            # If the worker mode is disabled, turn on the plant LEDs, and turn the worker LEDs to a specific colour (e.g red)
-            self.WorkerLedRED.value = True
-            self.WorkerLedGREEN.value = False
-            self.WorkerLedBLUE.value = False
-            self.PlantLeds.value = True
+            # If the worker mode is disabled, turn on the plants LED, i.e red and blue
+            self.LedRED.value = True
+            self.LedGREEN.value = False
+            self.LedBLUE.value = True
 
         else:
-            # If the worker mode is enabled, turn on the worker LEDs, and turn on the plant LEDs
-            self.WorkerLedRED.value = True
-            self.WorkerLedGREEN.value = True
-            self.WorkerLedBLUE.value = True
-            self.PlantLeds.value = True
+            # If the worker mode is enabled, turn on all LEDs to form white light
+            self.LedRED.value = True
+            self.LedGREEN.value = True
+            self.LedBLUE.value = True
 
     def loop(self):
         while True:
