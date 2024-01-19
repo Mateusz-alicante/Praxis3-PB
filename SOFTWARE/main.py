@@ -10,12 +10,12 @@ import digitalio
 
 LED_PINS = {
     'RED': board.GP17,
-    'BLUE': board.GP18,
-    'GREEN': board.GP19
+    'BLUE': board.GP22,
+    'GREEN': board.GP24
 }
 
-WORKER_BUTTON = board.GP20
-SYSTEM_BUTTON = board.GP21
+WORKER_BUTTON = board.GP14
+SYSTEM_BUTTON = board.GP29
 
 
 class LED_CONTROLLER:
