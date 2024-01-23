@@ -5,17 +5,18 @@ Project: Plant Monitoring System
 Description: This file contains the main program that will run on the Raspberry Pi Pico.
 '''
 
+import time
 import board
 import digitalio
 
 LED_PINS = {
-    'RED': board.GP17,
-    'BLUE': board.GP22,
-    'GREEN': board.GP24
+    'RED': board.GP17, #FINAL PIN
+    'BLUE': board.GP12, #FINAL PIN
+    'GREEN': board.GP19 #FINAL PIN
 }
 
-WORKER_BUTTON = board.GP14
-SYSTEM_BUTTON = board.GP29
+WORKER_BUTTON = board.GP10 #FINAL PIN
+SYSTEM_BUTTON = board.GP22  #FINAL PIN
 
 
 class LED_CONTROLLER:
@@ -28,7 +29,7 @@ class LED_CONTROLLER:
         self.greenPin.direction = digitalio.Direction.OUTPUT
         self.bluePin.direction = digitalio.Direction.OUTPUT
 
-        # When the LEDs are initialized (worker mode will be enabled by default), turn all of the LEDs on
+        # When the LEDs are initialized (worker mode will be enabled by default)
         self.LEDs_white()
 
     def LEDs_off(self):
@@ -78,16 +79,15 @@ class BOARD_CONTROLLER:
     def updateState(self):
         # Check if the buttons have been pressed since the last loop
         if self.state['Previous_WORKER_BUTTON'] != self.WorkerButton.value and self.WorkerButton.value == 0:
-            # This will check for negative edges of the worker button (when the button is pressed)
+            # This will check for negative edges of the worker button
             self.state['Worker'] = not self.state['Worker']
 
         if self.state['Previous_SYSTEM_BUTTON'] != self.SystemButton.value and self.SystemButton.value == 0:
-            # This will check for negative edges of the plant button (when the button is pressed)
+            # This will check for negative edges of the plant button
             self.state['System'] = not self.state['System']
 
-            # When the system is turned on, for the convenience of the user, the worker mode is also turned on.
+            # When the system is turned on, for the convenience of the user,
             # When the system is turned off, the worker mode is also turned off.
-            # (if someone is there to turn the system on, he will appreciate the worker mode being on)
             self.state['Worker'] = self.state['System']
 
     def updateLEDs(self):
@@ -98,11 +98,22 @@ class BOARD_CONTROLLER:
 
         # The following cases will only be applied if the system is on
         elif (self.state['Worker'] == 0):
-            # If the worker mode is disabled, turn on the plant LEDs, and turn the worker LEDs to a specific colour (e.g red)
+            # If the worker mode is disabled, turn on the plant LEDs,
             self.Leds.LEDs_pink()
         else:
-            # If the worker mode is enabled, turn on the worker LEDs, and turn on the plant LEDs
+            # If the worker mode is enabled, turn on the worker LEDs,
             self.Leds.LEDs_white()
+
+        def printStates(self):
+            print("----- System State -----")
+            print(f"System Active: {'ON' if self.state['System'] else 'OFF'}")
+            print(f"Worker Mode: {'ON' if self.state['Worker'] else 'OFF'}")
+            print(f"LED State: {'WHITE' if self.state['System'] and self.state['Worker'] else ('PINK' if self.state['System'] and not self.state['Worker'] else 'OFF')}")
+            print(f"Worker Button Pressed: {not self.WorkerButton.value}")
+            print(f"System Button Pressed: {not self.SystemButton.value}")
+            # print(f"Last Worker Button Press Time: {self.last_worker_button_press_time}")
+            # print(f"Last System Button Press Time: {self.last_system_button_press_time}")
+            print("-----------------------")
 
     def loop(self):
         while True:
@@ -110,9 +121,13 @@ class BOARD_CONTROLLER:
             self.updateState()
             self.updateLEDs()
 
+            self.printStates()
+
             # Update the previous button values
             self.state['Previous_WORKER_BUTTON'] = self.WorkerButton.value
             self.state['Previous_SYSTEM_BUTTON'] = self.SystemButton.value
+
+            time.sleep(0.5)
 
 
 controller = BOARD_CONTROLLER()
