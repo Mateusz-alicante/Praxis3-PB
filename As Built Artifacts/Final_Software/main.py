@@ -86,7 +86,7 @@ class BOARD_CONTROLLER:
             # This will check for negative edges of the plant button
             self.state['System'] = not self.state['System']
 
-            # When the system is turned on, for the convenience of the user,
+            # When the system is turned on, for the convenience of the user, the worker mode is turned on
             # When the system is turned off, the worker mode is also turned off.
             self.state['Worker'] = self.state['System']
 
@@ -104,16 +104,16 @@ class BOARD_CONTROLLER:
             # If the worker mode is enabled, turn on the worker LEDs,
             self.Leds.LEDs_white()
 
-        def printStates(self):
-            print("----- System State -----")
-            print(f"System Active: {'ON' if self.state['System'] else 'OFF'}")
-            print(f"Worker Mode: {'ON' if self.state['Worker'] else 'OFF'}")
-            print(f"LED State: {'WHITE' if self.state['System'] and self.state['Worker'] else ('PINK' if self.state['System'] and not self.state['Worker'] else 'OFF')}")
-            print(f"Worker Button Pressed: {not self.WorkerButton.value}")
-            print(f"System Button Pressed: {not self.SystemButton.value}")
-            # print(f"Last Worker Button Press Time: {self.last_worker_button_press_time}")
-            # print(f"Last System Button Press Time: {self.last_system_button_press_time}")
-            print("-----------------------")
+    def printStates(self):
+        print("----- System State -----")
+        print(f"System Active: {'ON' if self.state['System'] else 'OFF'}")
+        print(f"Worker Mode: {'ON' if self.state['Worker'] else 'OFF'}")
+        print(f"LED State: {'WHITE' if self.state['System'] and self.state['Worker'] else ('PINK' if self.state['System'] and not self.state['Worker'] else 'OFF')}")
+        print(f"Worker Button Pressed: {not self.WorkerButton.value}")
+        print(f"System Button Pressed: {not self.SystemButton.value}")
+        # print(f"Last Worker Button Press Time: {self.state['Previous_WORKER_BUTTON']}")
+        # print(f"Last System Button Press Time: {self.state['Previous_SYSTEM_BUTTON']}")
+        print("-----------------------")
 
     def loop(self):
         while True:
