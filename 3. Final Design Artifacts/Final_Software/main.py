@@ -21,6 +21,8 @@ SYSTEM_BUTTON = board.GP22  #FINAL PIN
 
 class LED_CONTROLLER:
     def __init__(self, redPin, greenPin, bluePin):
+
+        #initialize the LEDs
         self.redPin = digitalio.DigitalInOut(redPin)
         self.greenPin = digitalio.DigitalInOut(greenPin)
         self.bluePin = digitalio.DigitalInOut(bluePin)
@@ -32,16 +34,19 @@ class LED_CONTROLLER:
         # When the LEDs are initialized (worker mode will be enabled by default)
         self.LEDs_white()
 
+    #Turn off all three LEDs
     def LEDs_off(self):
         self.redPin.value = False
         self.greenPin.value = False
         self.bluePin.value = False
 
+    #LEDs for the plants
     def LEDs_pink(self):
         self.redPin.value = True
         self.greenPin.value = False
         self.bluePin.value = True
 
+    #LEDs for worker
     def LEDs_white(self):
         self.redPin.value = True
         self.greenPin.value = True
@@ -50,7 +55,8 @@ class LED_CONTROLLER:
 
 class BOARD_CONTROLLER:
     def __init__(self):
-        # Initialize the LEDs
+        
+        # Initialize the board's LED
         self.Leds = LED_CONTROLLER(
             LED_PINS['RED'], LED_PINS['GREEN'], LED_PINS['BLUE'])
 
@@ -86,7 +92,7 @@ class BOARD_CONTROLLER:
             # This will check for negative edges of the plant button
             self.state['System'] = not self.state['System']
 
-            # When the system is turned on, for the convenience of the user, the worker mode is turned on
+            # When the system is turned on, the worker mode is turned on.
             # When the system is turned off, the worker mode is also turned off.
             self.state['Worker'] = self.state['System']
 
@@ -104,24 +110,11 @@ class BOARD_CONTROLLER:
             # If the worker mode is enabled, turn on the worker LEDs,
             self.Leds.LEDs_white()
 
-    def printStates(self):
-        print("----- System State -----")
-        print(f"System Active: {'ON' if self.state['System'] else 'OFF'}")
-        print(f"Worker Mode: {'ON' if self.state['Worker'] else 'OFF'}")
-        print(f"LED State: {'WHITE' if self.state['System'] and self.state['Worker'] else ('PINK' if self.state['System'] and not self.state['Worker'] else 'OFF')}")
-        print(f"Worker Button Pressed: {not self.WorkerButton.value}")
-        print(f"System Button Pressed: {not self.SystemButton.value}")
-        # print(f"Last Worker Button Press Time: {self.state['Previous_WORKER_BUTTON']}")
-        # print(f"Last System Button Press Time: {self.state['Previous_SYSTEM_BUTTON']}")
-        print("-----------------------")
-
     def loop(self):
         while True:
             # Update the state and LEDs
             self.updateState()
             self.updateLEDs()
-
-            self.printStates()
 
             # Update the previous button values
             self.state['Previous_WORKER_BUTTON'] = self.WorkerButton.value
