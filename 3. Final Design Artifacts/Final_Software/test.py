@@ -2,7 +2,14 @@
 Course: ESC 204
 Team: 0105-08
 Project: Plant Monitoring System
-Description: This file contains the test class which imitates the behaviour of the board to test the functionality of the main file.
+Description: 
+This file replaces imported libraries that rely on being executed on the board by 
+custom objects that simulate the state of the board. Then the code written for the board 
+is tested using these objects, which allows us to inspect the state of the object (which simulated
+the board) at each moment.
+
+The different test cases are designed to test edge cases for the functionality.
+Test cases should start at very basic to more advanced functionality to aid debugging.
 '''
 
 
