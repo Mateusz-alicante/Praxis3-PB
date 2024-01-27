@@ -167,7 +167,6 @@ controller.SystemButton['value'] = False
 controller.singleLoop()
 controller.SystemButton['value'] = True
 controller.singleLoop()
-print(controller.state)
 assert controller.state['Worker'] == 0
 assert controller.state['System'] == 0
 assert controller.Leds.redPin['value'] == False
