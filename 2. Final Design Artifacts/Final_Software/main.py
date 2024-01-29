@@ -10,19 +10,19 @@ import board
 import digitalio
 
 LED_PINS = {
-    'RED': board.GP17, #FINAL PIN
-    'BLUE': board.GP12, #FINAL PIN
-    'GREEN': board.GP19 #FINAL PIN
+    'RED': board.GP17,  # FINAL PIN
+    'BLUE': board.GP12,  # FINAL PIN
+    'GREEN': board.GP19  # FINAL PIN
 }
 
-WORKER_BUTTON = board.GP10 #FINAL PIN
-SYSTEM_BUTTON = board.GP22  #FINAL PIN
+WORKER_BUTTON = board.GP10  # FINAL PIN
+SYSTEM_BUTTON = board.GP22  # FINAL PIN
 
 
 class LED_CONTROLLER:
     def __init__(self, redPin, greenPin, bluePin):
 
-        #initialize the LEDs
+        # initialize the LEDs
         self.redPin = digitalio.DigitalInOut(redPin)
         self.greenPin = digitalio.DigitalInOut(greenPin)
         self.bluePin = digitalio.DigitalInOut(bluePin)
@@ -34,19 +34,19 @@ class LED_CONTROLLER:
         # When the LEDs are initialized (worker mode will be enabled by default)
         self.LEDs_white()
 
-    #Turn off all three LEDs
+    # Turn off all three LEDs
     def LEDs_off(self):
         self.redPin.value = False
         self.greenPin.value = False
         self.bluePin.value = False
 
-    #LEDs for the plants
+    # LEDs for the plants
     def LEDs_pink(self):
         self.redPin.value = True
         self.greenPin.value = False
         self.bluePin.value = True
 
-    #LEDs for worker
+    # LEDs for worker
     def LEDs_white(self):
         self.redPin.value = True
         self.greenPin.value = True
@@ -55,7 +55,7 @@ class LED_CONTROLLER:
 
 class BOARD_CONTROLLER:
     def __init__(self):
-        
+
         # Initialize the board's LED
         self.Leds = LED_CONTROLLER(
             LED_PINS['RED'], LED_PINS['GREEN'], LED_PINS['BLUE'])
@@ -123,5 +123,8 @@ class BOARD_CONTROLLER:
             time.sleep(0.5)
 
 
+# Initialize the controller instance
 controller = BOARD_CONTROLLER()
+
+# Run the loop
 controller.loop()
